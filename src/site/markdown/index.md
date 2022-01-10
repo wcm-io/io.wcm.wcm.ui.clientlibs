@@ -28,6 +28,11 @@ Extensions for AEM HTML client libraries.
 * Provides support for advanced attributes on the include `script` elements like `async`, `defer`, `crossorigin`, `type` and more.
 
 
+### GitHub Repository
+
+Sources: https://github.com/wcm-io/io.wcm.wcm.ui.clientlibs
+
+
 [usage]: usage.html
 [apidocs]: apidocs/
 [changelog]: changes-report.html
