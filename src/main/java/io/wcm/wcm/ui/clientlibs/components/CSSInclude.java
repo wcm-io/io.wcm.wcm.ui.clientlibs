@@ -78,7 +78,7 @@ public class CSSInclude {
   private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths) {
     StringBuilder markup = new StringBuilder();
     for (String libraryPath : libraryPaths) {
-      markup.append("<link rel=\"stylesheet\" href=\"" + xssApi.encodeForHTMLAttr(libraryPath) + "\" type=\"text/css\">\n");
+      markup.append("<link rel=\"stylesheet\" href=\"").append(xssApi.encodeForHTMLAttr(libraryPath)).append("\" type=\"text/css\">\n");
     }
     return markup.toString();
   }

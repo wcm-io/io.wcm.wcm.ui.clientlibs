@@ -51,12 +51,12 @@ import com.adobe.granite.ui.clientlibs.LibraryType;
 @ProviderType
 public class JSInclude {
 
-  private static final Set CROSSORIGIN_ALLOWED_VALUES = new HashSet<>(Arrays.asList(
+  private static final Set<String> CROSSORIGIN_ALLOWED_VALUES = new HashSet<>(Arrays.asList(
       "anonymous", "use-credentials"));
-  private static final Set REFERRERPOLICY_ALLOWED_VALUES = new HashSet<>(Arrays.asList(
+  private static final Set<String> REFERRERPOLICY_ALLOWED_VALUES = new HashSet<>(Arrays.asList(
       "no-referrer", "no-referrer-when-downgrade", "origin", "origin-when-cross-origin",
       "same-origin", "strict-origin", "strict-origin-when-cross-origin", "unsafe-url"));
-  private static final Set TYPE_ALLOWED_VALUES = new HashSet<>(Arrays.asList(
+  private static final Set<String> TYPE_ALLOWED_VALUES = new HashSet<>(Arrays.asList(
       "text/javascript", "module"));
 
   @SlingObject
@@ -144,7 +144,7 @@ public class JSInclude {
   private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs) {
     StringBuilder markup = new StringBuilder();
     for (String libraryPath : libraryPaths) {
-      markup.append("<script src=\"" + xssApi.encodeForHTMLAttr(libraryPath) + "\"");
+      markup.append("<script src=\"").append(xssApi.encodeForHTMLAttr(libraryPath)).append("\"");
       for (Map.Entry<String, String> attr : attrs.entrySet()) {
         markup.append(" ");
         markup.append(attr.getKey());
