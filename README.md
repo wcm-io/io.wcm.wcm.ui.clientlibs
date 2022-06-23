@@ -1,7 +1,7 @@
 <img src="https://wcm.io/images/favicon-16@2x.png"/> WCM Clientlibs UI Extensions
 ======
 [![Build](https://github.com/wcm-io/io.wcm.wcm.ui.clientlibs/workflows/Build/badge.svg?branch=develop)](https://github.com/wcm-io/io.wcm.wcm.ui.clientlibs/actions?query=workflow%3ABuild+branch%3Adevelop)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.wcm/io.wcm.wcm.ui.clientlibs/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.wcm/io.wcm.wcm.ui.clientlibs)
+[![Maven Central](https://img.shields.io/maven-central/v/io.wcm/io.wcm.wcm.ui.clientlibs)](https://repo1.maven.org/maven2/io/wcm/io.wcm.wcm.ui.clientlibs/)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=wcm-io_io.wcm.wcm.ui.clientlibs&metric=coverage)](https://sonarcloud.io/summary/new_code?id=wcm-io_io.wcm.wcm.ui.clientlibs)
 
 Extensions for AEM HTML client libraries.

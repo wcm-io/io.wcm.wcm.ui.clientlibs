@@ -2,7 +2,7 @@
 
 Extensions for AEM HTML client libraries.
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.wcm/io.wcm.wcm.ui.clientlibs/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.wcm/io.wcm.wcm.ui.clientlibs)
+[![Maven Central](https://img.shields.io/maven-central/v/io.wcm/io.wcm.wcm.ui.clientlibs)](https://repo1.maven.org/maven2/io/wcm/io.wcm.wcm.ui.clientlibs/)
 
 
 ### Documentation
