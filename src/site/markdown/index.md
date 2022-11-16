@@ -12,6 +12,12 @@ Extensions for AEM HTML client libraries.
 * [Changelog][changelog]
 
 
+### Overview
+
+* Drop-in replacement for `/libs/granite/sightly/templates/clientlib.html` to include AEM client libraries (JS, CSS) in your HTML markup.
+* Provides support for advanced attributes on the include `script` elements like `async`, `defer`, `crossorigin`, `type` and more.
+
+
 ### AEM Version Support Matrix
 
 |WCM Clientlibs UI Extensions version |AEM version supported
@@ -20,12 +26,6 @@ Extensions for AEM HTML client libraries.
 |1.2.x                                |AEM 6.4+, AEMaaCS
 |1.1.x                                |AEM 6.3+
 |1.0.x                                |AEM 6.2+
-
-
-### Overview
-
-* Drop-in replacement for `/libs/granite/sightly/templates/clientlib.html` to include AEM client libraries (JS, CSS) in your HTML markup.
-* Provides support for advanced attributes on the include `script` elements like `async`, `defer`, `crossorigin`, `type` and more.
 
 
 ### GitHub Repository
