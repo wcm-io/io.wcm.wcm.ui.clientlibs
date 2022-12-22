@@ -7,7 +7,7 @@
 Extensions for AEM HTML client libraries.
 
 Documentation: https://wcm.io/wcm/ui/clientlibs/<br/>
-Issues: https://wcm-io.atlassian.net/browse/WWCM<br/>
+Issues: https://github.com/wcm-io/io.wcm.wcm.ui.clientlibs/issues<br/>
 Wiki: https://wcm-io.atlassian.net/wiki/<br/>
 Continuous Integration: https://github.com/wcm-io/io.wcm.wcm.ui.clientlibs/actions<br/>
 Commercial support: https://wcm.io/commercial-support.html
