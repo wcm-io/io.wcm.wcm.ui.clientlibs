@@ -19,7 +19,9 @@
  */
 package io.wcm.wcm.ui.clientlibs.components;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -46,6 +48,8 @@ import com.adobe.granite.ui.clientlibs.LibraryType;
 public class CSSInclude {
 
   @SlingObject
+  private SlingHttpServletRequest request;
+  @SlingObject
   private ResourceResolver resourceResolver;
   @OSGiService
   private HtmlLibraryManager htmlLibraryManager;
@@ -65,7 +69,8 @@ public class CSSInclude {
       List<String> libraryPaths = IncludeUtil.getLibraryUrls(htmlLibraryManager, resourceResolver,
           categoryArray, LibraryType.CSS);
       if (!libraryPaths.isEmpty()) {
-        this.include = buildIncludeString(libraryPaths);
+        Map<String, String> customAttrs = IncludeUtil.getCustomAttributes(request);
+        this.include = buildIncludeString(libraryPaths, customAttrs);
       }
     }
   }
@@ -73,12 +78,20 @@ public class CSSInclude {
   /**
    * Build CSS link tags for all client libraries with the defined custom script tag attributes set.
    * @param libraryPaths Library paths
+   * @param customAttrs Custom HTML attributes for script tag
    * @return HTML markup with script tags
    */
-  private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths) {
+  private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths,
+      @NotNull Map<String, String> customAttrs) {
     StringBuilder markup = new StringBuilder();
     for (String libraryPath : libraryPaths) {
-      markup.append("<link rel=\"stylesheet\" href=\"").append(xssApi.encodeForHTMLAttr(libraryPath)).append("\" type=\"text/css\">\n");
+      Map<String, String> combinedAttrs = new LinkedHashMap<>();
+      combinedAttrs.put("rel", "stylesheet");
+      combinedAttrs.put("href", libraryPath);
+      combinedAttrs.put("type", "text/css");
+      combinedAttrs.putAll(customAttrs);
+      markup.append(IncludeUtil.buildHtmlElementOpenTag("link", combinedAttrs, xssApi));
+      markup.append("\n");
     }
     return markup.toString();
   }

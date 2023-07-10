@@ -20,11 +20,17 @@
 package io.wcm.wcm.ui.clientlibs.components;
 
 import java.lang.reflect.Array;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.xss.XSSAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,6 +42,8 @@ import com.adobe.granite.ui.clientlibs.LibraryType;
  * Helper methods for building client library includes.
  */
 final class IncludeUtil {
+
+  private static final String CUSTOM_ATTRIBUTE_PREFIX = "custom.";
 
   private IncludeUtil() {
     // static methods only
@@ -98,6 +106,48 @@ final class IncludeUtil {
       path = null;
     }
     return path;
+  }
+
+  /**
+   * Gets all request attributes that are prefixed with "custom.".
+   * @param request Request
+   * @return Map with custom attributes (keys without the "custom." prefix).
+   */
+  public static @NotNull Map<String, String> getCustomAttributes(@NotNull SlingHttpServletRequest request) {
+    Map<String, String> result = new TreeMap<>();
+    List<String> customAttributeNames = Collections.list(request.getAttributeNames()).stream()
+        .filter(name -> StringUtils.startsWith(name, CUSTOM_ATTRIBUTE_PREFIX))
+        .collect(Collectors.toList());
+    customAttributeNames.forEach(customAttribute -> {
+      String name = StringUtils.substringAfter(customAttribute, CUSTOM_ATTRIBUTE_PREFIX);
+      Object value = request.getAttribute(customAttribute);
+      result.put(name, value != null ? value.toString() : null);
+    });
+    return result;
+  }
+
+  /**
+   * Builds opening HTML element with given name and attributes.
+   * @param elementName Element name
+   * @param attrs HTML attributes
+   * @param xssApi XSS API
+   * @return HTML element
+   */
+  public static @NotNull String buildHtmlElementOpenTag(@NotNull String elementName, @NotNull Map<String, String> attrs,
+      XSSAPI xssApi) {
+    StringBuilder markup = new StringBuilder();
+    markup.append("<").append(elementName);
+    for (Map.Entry<String, String> attr : attrs.entrySet()) {
+      markup.append(" ");
+      markup.append(attr.getKey());
+      if (attr.getValue() != null) {
+        markup.append("=\"");
+        markup.append(xssApi.encodeForHTMLAttr(attr.getValue()));
+        markup.append("\"");
+      }
+    }
+    markup.append(">");
+    return markup.toString();
   }
 
 }

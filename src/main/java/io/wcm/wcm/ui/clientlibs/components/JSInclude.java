@@ -21,6 +21,7 @@ package io.wcm.wcm.ui.clientlibs.components;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -60,6 +61,8 @@ public class JSInclude {
       "text/javascript", "module"));
 
   @SlingObject
+  private SlingHttpServletRequest request;
+  @SlingObject
   private ResourceResolver resourceResolver;
   @OSGiService
   private HtmlLibraryManager htmlLibraryManager;
@@ -96,7 +99,8 @@ public class JSInclude {
           categoryArray, LibraryType.JS);
       if (!libraryPaths.isEmpty()) {
         Map<String, String> attrs = validateAndBuildAttributes();
-        this.include = buildIncludeString(libraryPaths, attrs);
+        Map<String, String> customAttrs = IncludeUtil.getCustomAttributes(request);
+        this.include = buildIncludeString(libraryPaths, attrs, customAttrs);
       }
     }
   }
@@ -139,22 +143,19 @@ public class JSInclude {
    * Build script tags for all client libraries with the defined custom script tag attributes set.
    * @param libraryPaths Library paths
    * @param attrs HTML attributes for script tag
+   * @param customAttrs Custom HTML attributes for script tag
    * @return HTML markup with script tags
    */
-  private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs) {
+  private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs,
+      @NotNull Map<String, String> customAttrs) {
     StringBuilder markup = new StringBuilder();
     for (String libraryPath : libraryPaths) {
-      markup.append("<script src=\"").append(xssApi.encodeForHTMLAttr(libraryPath)).append("\"");
-      for (Map.Entry<String, String> attr : attrs.entrySet()) {
-        markup.append(" ");
-        markup.append(attr.getKey());
-        if (attr.getValue() != null) {
-          markup.append("=\"");
-          markup.append(attr.getValue());
-          markup.append("\"");
-        }
-      }
-      markup.append("></script>\n");
+      Map<String, String> combinedAttrs = new LinkedHashMap<>();
+      combinedAttrs.put("src", libraryPath);
+      combinedAttrs.putAll(attrs);
+      combinedAttrs.putAll(customAttrs);
+      markup.append(IncludeUtil.buildHtmlElementOpenTag("script", combinedAttrs, xssApi));
+      markup.append("</script>\n");
     }
     return markup.toString();
   }
