@@ -23,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+
 import org.apache.sling.api.resource.PersistenceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -131,16 +133,14 @@ class JSIncludeTest extends AbstractIncludeTest {
     context.request().setAttribute("async", true);
     context.request().setAttribute("nomodule", true);
     context.request().setAttribute("type", "text/javascript");
-    context.request().setAttribute("custom-attr1", "value1");
-    context.request().setAttribute("custom-attr-2", 5);
-    context.request().setAttribute("custom-attr3", null);
+    context.request().setAttribute("customAttributes", List.of("attr1=value1", "data-attr2=5", "attr3"));
     JSInclude underTest = AdaptTo.notNull(context.request(), JSInclude.class);
     assertEquals("<script src=\"/etc/clientlibs/app1/clientlib3.min.js\" "
-        + "async nomodule type=\"text/javascript\" attr-2=\"5\" attr1=\"value1\" attr3></script>\n"
+        + "async nomodule type=\"text/javascript\" attr1=\"value1\" data-attr2=\"5\" attr3></script>\n"
         + "<script src=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.js\" "
-        + "async nomodule type=\"text/javascript\" attr-2=\"5\" attr1=\"value1\" attr3></script>\n"
+        + "async nomodule type=\"text/javascript\" attr1=\"value1\" data-attr2=\"5\" attr3></script>\n"
         + "<script src=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.js\" "
-        + "async nomodule type=\"text/javascript\" attr-2=\"5\" attr1=\"value1\" attr3></script>\n",
+        + "async nomodule type=\"text/javascript\" attr1=\"value1\" data-attr2=\"5\" attr3></script>\n",
         underTest.getInclude());
   }
 

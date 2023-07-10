@@ -20,6 +20,7 @@
 package io.wcm.wcm.ui.clientlibs.components;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -61,8 +62,6 @@ public class JSInclude {
       "text/javascript", "module"));
 
   @SlingObject
-  private SlingHttpServletRequest request;
-  @SlingObject
   private ResourceResolver resourceResolver;
   @OSGiService
   private HtmlLibraryManager htmlLibraryManager;
@@ -87,6 +86,8 @@ public class JSInclude {
   private String referrerpolicy;
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private String type;
+  @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
+  private Collection<String> customAttributes;
 
   private String include;
 
@@ -99,7 +100,7 @@ public class JSInclude {
           categoryArray, LibraryType.JS);
       if (!libraryPaths.isEmpty()) {
         Map<String, String> attrs = validateAndBuildAttributes();
-        Map<String, String> customAttrs = IncludeUtil.getCustomAttributes(request);
+        Map<String, String> customAttrs = IncludeUtil.getCustomAttributes(customAttributes);
         this.include = buildIncludeString(libraryPaths, attrs, customAttrs);
       }
     }

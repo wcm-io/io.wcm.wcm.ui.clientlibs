@@ -19,6 +19,7 @@
  */
 package io.wcm.wcm.ui.clientlibs.components;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,8 +49,6 @@ import com.adobe.granite.ui.clientlibs.LibraryType;
 public class CSSInclude {
 
   @SlingObject
-  private SlingHttpServletRequest request;
-  @SlingObject
   private ResourceResolver resourceResolver;
   @OSGiService
   private HtmlLibraryManager htmlLibraryManager;
@@ -58,6 +57,8 @@ public class CSSInclude {
 
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private Object categories;
+  @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
+  private Collection<String> customAttributes;
 
   private String include;
 
@@ -69,7 +70,7 @@ public class CSSInclude {
       List<String> libraryPaths = IncludeUtil.getLibraryUrls(htmlLibraryManager, resourceResolver,
           categoryArray, LibraryType.CSS);
       if (!libraryPaths.isEmpty()) {
-        Map<String, String> customAttrs = IncludeUtil.getCustomAttributes(request);
+        Map<String, String> customAttrs = IncludeUtil.getCustomAttributes(customAttributes);
         this.include = buildIncludeString(libraryPaths, customAttrs);
       }
     }

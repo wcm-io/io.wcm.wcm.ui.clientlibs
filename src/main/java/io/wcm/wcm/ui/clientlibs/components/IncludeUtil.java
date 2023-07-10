@@ -20,15 +20,14 @@
 package io.wcm.wcm.ui.clientlibs.components;
 
 import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.xss.XSSAPI;
 import org.jetbrains.annotations.NotNull;
@@ -42,8 +41,6 @@ import com.adobe.granite.ui.clientlibs.LibraryType;
  * Helper methods for building client library includes.
  */
 final class IncludeUtil {
-
-  private static final String CUSTOM_ATTRIBUTE_PREFIX = "custom-";
 
   private IncludeUtil() {
     // static methods only
@@ -109,20 +106,31 @@ final class IncludeUtil {
   }
 
   /**
-   * Gets all request attributes that are prefixed with "custom.".
-   * @param request Request
-   * @return Map with custom attributes (keys without the "custom." prefix).
+   * Transform list of custom attributes to a map.
+   * @param customAttributes List of custom attributes in syntax "attr=value" for each item.
+   * @return Map with custom attributes
    */
-  public static @NotNull Map<String, String> getCustomAttributes(@NotNull SlingHttpServletRequest request) {
-    Map<String, String> result = new TreeMap<>();
-    List<String> customAttributeNames = Collections.list(request.getAttributeNames()).stream()
-        .filter(name -> StringUtils.startsWith(name, CUSTOM_ATTRIBUTE_PREFIX))
-        .collect(Collectors.toList());
-    customAttributeNames.forEach(customAttribute -> {
-      String name = StringUtils.substringAfter(customAttribute, CUSTOM_ATTRIBUTE_PREFIX);
-      Object value = request.getAttribute(customAttribute);
-      result.put(name, value != null ? value.toString() : null);
-    });
+  public static @NotNull Map<String, String> getCustomAttributes(@Nullable Collection<String> customAttributes) {
+    if (customAttributes == null) {
+      return Collections.emptyMap();
+    }
+    Map<String, String> result = new LinkedHashMap<>();
+    for (String item : customAttributes) {
+      if (item != null) {
+        int separator = item.indexOf('=');
+        String name;
+        String value;
+        if (separator > 0) {
+          name = item.substring(0, separator);
+          value = item.substring(separator + 1);
+        }
+        else {
+          name = item;
+          value = null;
+        }
+        result.put(name, value);
+      }
+    }
     return result;
   }
 
