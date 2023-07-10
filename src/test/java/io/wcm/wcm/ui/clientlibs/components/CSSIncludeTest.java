@@ -64,12 +64,15 @@ class CSSIncludeTest extends AbstractIncludeTest {
   }
 
   @Test
-  void testMulti() {
+  void testMultiWithCustom() {
     context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    context.request().setAttribute("custom-attr1", "value1");
+    context.request().setAttribute("custom-attr-2", 5);
+    context.request().setAttribute("custom-attr3", null);
     CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
-    assertEquals("<link rel=\"stylesheet\" href=\"/etc/clientlibs/app1/clientlib3.min.css\" type=\"text/css\">\n"
-        + "<link rel=\"stylesheet\" href=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.css\" type=\"text/css\">\n"
-        + "<link rel=\"stylesheet\" href=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.css\" type=\"text/css\">\n",
+    assertEquals("<link rel=\"stylesheet\" href=\"/etc/clientlibs/app1/clientlib3.min.css\" type=\"text/css\" attr-2=\"5\" attr1=\"value1\" attr3>\n"
+        + "<link rel=\"stylesheet\" href=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.css\" type=\"text/css\" attr-2=\"5\" attr1=\"value1\" attr3>\n"
+        + "<link rel=\"stylesheet\" href=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.css\" type=\"text/css\" attr-2=\"5\" attr1=\"value1\" attr3>\n",
         underTest.getInclude());
   }
 

@@ -43,7 +43,7 @@ import com.adobe.granite.ui.clientlibs.LibraryType;
  */
 final class IncludeUtil {
 
-  private static final String CUSTOM_ATTRIBUTE_PREFIX = "custom.";
+  private static final String CUSTOM_ATTRIBUTE_PREFIX = "custom-";
 
   private IncludeUtil() {
     // static methods only
