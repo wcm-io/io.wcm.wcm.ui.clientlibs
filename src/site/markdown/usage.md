@@ -30,6 +30,15 @@ The following advanced script tag attributes are supported:
 
 See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#Attributes for a full documentation of this attributes.
 
+It is possible to set a list of custom attributes:
+
+```html
+<sly data-sly-use.clientlib="/apps/wcm-io/wcm/ui/clientlibs/sightly/templates/clientlib.html"
+    data-sly-call="${clientlib.js @ categories=['my-clientlib-category'],
+    customAttributes=['attr1=value 1','data-attr2=5','attr3']}"/>
+```
+
+
 ### Include CSS Files
 
 Include CSS without special attributes:
@@ -37,4 +46,12 @@ Include CSS without special attributes:
 ```html
 <sly data-sly-use.clientlib="/apps/wcm-io/wcm/ui/clientlibs/sightly/templates/clientlib.html"
     data-sly-call="${clientlib.css @ categories=['my-clientlib-category']}"/>
+```
+
+It is possible to set a list of custom attributes:
+
+```html
+<sly data-sly-use.clientlib="/apps/wcm-io/wcm/ui/clientlibs/sightly/templates/clientlib.html"
+    data-sly-call="${clientlib.css @ categories=['my-clientlib-category'],
+    customAttributes=['attr1=value 1','data-attr2=5','attr3']}"/>
 ```

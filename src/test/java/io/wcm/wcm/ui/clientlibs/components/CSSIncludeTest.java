@@ -23,8 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-
 import org.apache.sling.api.resource.PersistenceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,7 +66,7 @@ class CSSIncludeTest extends AbstractIncludeTest {
   @Test
   void testMultiWithCustom() {
     context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
-    context.request().setAttribute("customAttributes", List.of("attr1=value1", "data-attr2=5", "attr3"));
+    context.request().setAttribute("customAttributes", new String[] { "attr1=value1", "data-attr2=5", "attr3" });
     CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
     assertEquals("<link rel=\"stylesheet\" href=\"/etc/clientlibs/app1/clientlib3.min.css\" type=\"text/css\" attr1=\"value1\" data-attr2=\"5\" attr3>\n"
         + "<link rel=\"stylesheet\" href=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.css\" type=\"text/css\" attr1=\"value1\" data-attr2=\"5\" attr3>\n"

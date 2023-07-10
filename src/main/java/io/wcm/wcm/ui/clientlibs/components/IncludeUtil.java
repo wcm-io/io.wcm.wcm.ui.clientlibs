@@ -20,7 +20,6 @@
 package io.wcm.wcm.ui.clientlibs.components;
 
 import java.lang.reflect.Array;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -49,7 +48,7 @@ final class IncludeUtil {
   /**
    * @return Array of clientlib category names as specified in HTL script
    */
-  public static @Nullable String[] toCategoryArray(Object categories) {
+  public static @Nullable String[] toArray(Object categories) {
     String[] categoryArray = null;
     if (categories instanceof String) {
       categoryArray = new String[] { (String)categories };
@@ -110,12 +109,13 @@ final class IncludeUtil {
    * @param customAttributes List of custom attributes in syntax "attr=value" for each item.
    * @return Map with custom attributes
    */
-  public static @NotNull Map<String, String> getCustomAttributes(@Nullable Collection<String> customAttributes) {
-    if (customAttributes == null) {
+  public static @NotNull Map<String, String> getCustomAttributes(@Nullable Object customAttributes) {
+    String[] customAttributesArray = toArray(customAttributes);
+    if (customAttributesArray == null) {
       return Collections.emptyMap();
     }
     Map<String, String> result = new LinkedHashMap<>();
-    for (String item : customAttributes) {
+    for (String item : customAttributesArray) {
       if (item != null) {
         int separator = item.indexOf('=');
         String name;

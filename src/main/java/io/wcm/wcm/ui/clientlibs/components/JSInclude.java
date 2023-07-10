@@ -20,7 +20,6 @@
 package io.wcm.wcm.ui.clientlibs.components;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -87,14 +86,14 @@ public class JSInclude {
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private String type;
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
-  private Collection<String> customAttributes;
+  private Object customAttributes;
 
   private String include;
 
   @PostConstruct
   private void activate() {
     // build include string
-    String[] categoryArray = IncludeUtil.toCategoryArray(categories);
+    String[] categoryArray = IncludeUtil.toArray(categories);
     if (categoryArray != null) {
       List<String> libraryPaths = IncludeUtil.getLibraryUrls(htmlLibraryManager, resourceResolver,
           categoryArray, LibraryType.JS);
