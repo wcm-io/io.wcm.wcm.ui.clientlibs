@@ -144,17 +144,10 @@ public class JSInclude {
   private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs) {
     StringBuilder markup = new StringBuilder();
     for (String libraryPath : libraryPaths) {
-      markup.append("<script src=\"").append(xssApi.encodeForHTMLAttr(libraryPath)).append("\"");
-      for (Map.Entry<String, String> attr : attrs.entrySet()) {
-        markup.append(" ");
-        markup.append(attr.getKey());
-        if (attr.getValue() != null) {
-          markup.append("=\"");
-          markup.append(attr.getValue());
-          markup.append("\"");
-        }
-      }
-      markup.append("></script>\n");
+      HtmlTagBuilder builder = new HtmlTagBuilder("script", true, xssApi);
+      builder.setAttrs(attrs);
+      builder.setAttr("src", libraryPath);
+      markup.append(builder.build());
     }
     return markup.toString();
   }

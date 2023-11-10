@@ -105,17 +105,10 @@ public class CSSInclude {
   private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs) {
     StringBuilder markup = new StringBuilder();
     for (String libraryPath : libraryPaths) {
-      markup.append("<link href=\"").append(xssApi.encodeForHTMLAttr(libraryPath)).append("\"");
-      for (Map.Entry<String, String> attr : attrs.entrySet()) {
-        markup.append(" ");
-        markup.append(attr.getKey());
-        if (attr.getValue() != null) {
-          markup.append("=\"");
-          markup.append(attr.getValue());
-          markup.append("\"");
-        }
-      }
-      markup.append(">\n");
+      HtmlTagBuilder builder = new HtmlTagBuilder("link", false, xssApi);
+      builder.setAttrs(attrs);
+      builder.setAttr("href", libraryPath);
+      markup.append(builder.build());
     }
     return markup.toString();
   }
