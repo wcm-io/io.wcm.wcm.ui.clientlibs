@@ -26,6 +26,8 @@ import static org.mockito.Mockito.when;
 import org.apache.sling.api.resource.PersistenceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -42,7 +44,26 @@ class CSSIncludeTest extends AbstractIncludeTest {
   void testSingle() {
     context.request().setAttribute("categories", CATEGORY_SINGLE);
     CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
-    assertEquals("<link rel=\"stylesheet\" href=\"/etc/clientlibs/app1/clientlib1.min.css\" type=\"text/css\">\n",
+    assertEquals("<link href=\"/etc/clientlibs/app1/clientlib1.min.css\" rel=\"stylesheet\" type=\"text/css\">\n",
+        underTest.getInclude());
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = { "preload", "prefetch" })
+  void testSingle_rel_valid(String validRelParameter) {
+    context.request().setAttribute("categories", CATEGORY_SINGLE);
+    context.request().setAttribute("rel", validRelParameter);
+    CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
+    assertEquals("<link href=\"/etc/clientlibs/app1/clientlib1.min.css\" rel=\"" + validRelParameter + "\">\n",
+        underTest.getInclude());
+  }
+
+  @Test
+  void testSingle_rel_invalid() {
+    context.request().setAttribute("categories", CATEGORY_SINGLE);
+    context.request().setAttribute("rel", "inalid");
+    CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
+    assertEquals("<link href=\"/etc/clientlibs/app1/clientlib1.min.css\" rel=\"stylesheet\" type=\"text/css\">\n",
         underTest.getInclude());
   }
 
@@ -51,7 +72,7 @@ class CSSIncludeTest extends AbstractIncludeTest {
     when(htmlLibraryManager.isMinifyEnabled()).thenReturn(false);
     context.request().setAttribute("categories", CATEGORY_SINGLE);
     CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
-    assertEquals("<link rel=\"stylesheet\" href=\"/etc/clientlibs/app1/clientlib1.css\" type=\"text/css\">\n",
+    assertEquals("<link href=\"/etc/clientlibs/app1/clientlib1.css\" rel=\"stylesheet\" type=\"text/css\">\n",
         underTest.getInclude());
   }
 
@@ -59,7 +80,7 @@ class CSSIncludeTest extends AbstractIncludeTest {
   void testSingleProxy() {
     context.request().setAttribute("categories", CATEGORY_SINGLE_PROXY);
     CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
-    assertEquals("<link rel=\"stylesheet\" href=\"/etc.clientlibs/app1/clientlibs/clientlib2_proxy.min.css\" type=\"text/css\">\n",
+    assertEquals("<link href=\"/etc.clientlibs/app1/clientlibs/clientlib2_proxy.min.css\" rel=\"stylesheet\" type=\"text/css\">\n",
         underTest.getInclude());
   }
 
@@ -67,9 +88,9 @@ class CSSIncludeTest extends AbstractIncludeTest {
   void testMulti() {
     context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
     CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
-    assertEquals("<link rel=\"stylesheet\" href=\"/etc/clientlibs/app1/clientlib3.min.css\" type=\"text/css\">\n"
-        + "<link rel=\"stylesheet\" href=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.css\" type=\"text/css\">\n"
-        + "<link rel=\"stylesheet\" href=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.css\" type=\"text/css\">\n",
+    assertEquals("<link href=\"/etc/clientlibs/app1/clientlib3.min.css\" rel=\"stylesheet\" type=\"text/css\">\n"
+        + "<link href=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.css\" rel=\"stylesheet\" type=\"text/css\">\n"
+        + "<link href=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.css\" rel=\"stylesheet\" type=\"text/css\">\n",
         underTest.getInclude());
   }
 

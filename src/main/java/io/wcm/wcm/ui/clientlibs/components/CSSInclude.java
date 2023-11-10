@@ -20,6 +20,9 @@
 package io.wcm.wcm.ui.clientlibs.components;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
 
@@ -45,6 +48,9 @@ import com.adobe.granite.ui.clientlibs.LibraryType;
 @ProviderType
 public class CSSInclude {
 
+  private static final Set<String> REL_ALLOWED_VALUES = Set.of(
+      "prefetch", "preload");
+
   @SlingObject
   private ResourceResolver resourceResolver;
   @OSGiService
@@ -54,6 +60,8 @@ public class CSSInclude {
 
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private Object categories;
+  @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
+  private String rel;
 
   private String include;
 
@@ -65,9 +73,28 @@ public class CSSInclude {
       List<String> libraryPaths = IncludeUtil.getLibraryUrls(htmlLibraryManager, resourceResolver,
           categoryArray, LibraryType.CSS);
       if (!libraryPaths.isEmpty()) {
-        this.include = buildIncludeString(libraryPaths);
+        Map<String, String> attrs = validateAndBuildAttributes();
+        this.include = buildIncludeString(libraryPaths, attrs);
       }
     }
+  }
+
+  /**
+   * Validate attribute values from HTL script, escape them properly and build a map with all attributes
+   * for the resulting script tag(s).
+   * @return Map with attribute for script tag
+   */
+  private @NotNull Map<String, String> validateAndBuildAttributes() {
+    Map<String, String> attrs = new TreeMap<>();
+    if (rel != null && REL_ALLOWED_VALUES.contains(rel)) {
+      attrs.put("rel", rel);
+    }
+    else {
+      // no specific rel defined, provide default rel/type attrs for CSS
+      attrs.put("rel", "stylesheet");
+      attrs.put("type", "text/css");
+    }
+    return attrs;
   }
 
   /**
@@ -75,10 +102,20 @@ public class CSSInclude {
    * @param libraryPaths Library paths
    * @return HTML markup with script tags
    */
-  private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths) {
+  private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs) {
     StringBuilder markup = new StringBuilder();
     for (String libraryPath : libraryPaths) {
-      markup.append("<link rel=\"stylesheet\" href=\"").append(xssApi.encodeForHTMLAttr(libraryPath)).append("\" type=\"text/css\">\n");
+      markup.append("<link href=\"").append(xssApi.encodeForHTMLAttr(libraryPath)).append("\"");
+      for (Map.Entry<String, String> attr : attrs.entrySet()) {
+        markup.append(" ");
+        markup.append(attr.getKey());
+        if (attr.getValue() != null) {
+          markup.append("=\"");
+          markup.append(attr.getValue());
+          markup.append("\"");
+        }
+      }
+      markup.append(">\n");
     }
     return markup.toString();
   }
