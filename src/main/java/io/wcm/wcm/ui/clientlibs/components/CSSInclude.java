@@ -19,10 +19,10 @@
  */
 package io.wcm.wcm.ui.clientlibs.components;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
 
@@ -85,7 +85,7 @@ public class CSSInclude {
    * @return Map with attribute for script tag
    */
   private @NotNull Map<String, String> validateAndBuildAttributes() {
-    Map<String, String> attrs = new TreeMap<>();
+    Map<String, String> attrs = new HashMap<>();
     if (rel != null && REL_ALLOWED_VALUES.contains(rel)) {
       attrs.put("rel", rel);
     }
