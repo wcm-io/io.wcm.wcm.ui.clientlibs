@@ -38,3 +38,7 @@ Include CSS without special attributes:
 <sly data-sly-use.clientlib="/apps/wcm-io/wcm/ui/clientlibs/sightly/templates/clientlib.html"
     data-sly-call="${clientlib.css @ categories=['my-clientlib-category']}"/>
 ```
+
+The following advanced link tag attributes are supported:
+
+* `rel` = prefetch | preload (if not given, `rel="stylesheet" type="text/css"` is set)
