@@ -20,7 +20,10 @@
 package io.wcm.wcm.ui.clientlibs.components;
 
 import java.lang.reflect.Array;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -44,7 +47,7 @@ final class IncludeUtil {
   /**
    * @return Array of clientlib category names as specified in HTL script
    */
-  public static @Nullable String[] toCategoryArray(Object categories) {
+  public static @Nullable String[] toArray(Object categories) {
     String[] categoryArray = null;
     if (categories instanceof String) {
       categoryArray = new String[] { (String)categories };
@@ -98,6 +101,36 @@ final class IncludeUtil {
       path = null;
     }
     return path;
+  }
+
+  /**
+   * Transform list of custom attributes to a map.
+   * @param customAttributes List of custom attributes in syntax "attr=value" for each item.
+   * @return Map with custom attributes
+   */
+  public static @NotNull Map<String, String> getCustomAttributes(@Nullable Object customAttributes) {
+    String[] customAttributesArray = toArray(customAttributes);
+    if (customAttributesArray == null) {
+      return Collections.emptyMap();
+    }
+    Map<String, String> result = new HashMap<>();
+    for (String item : customAttributesArray) {
+      if (item != null) {
+        int separator = item.indexOf('=');
+        String name;
+        String value;
+        if (separator > 0) {
+          name = item.substring(0, separator);
+          value = item.substring(separator + 1);
+        }
+        else {
+          name = item;
+          value = null;
+        }
+        result.put(name, value);
+      }
+    }
+    return result;
   }
 
 }

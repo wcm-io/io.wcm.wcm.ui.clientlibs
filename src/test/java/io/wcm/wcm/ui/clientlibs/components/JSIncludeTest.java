@@ -127,15 +127,20 @@ class JSIncludeTest extends AbstractIncludeTest {
   }
 
   @Test
-  void testMultiAttributes() {
+  void testMultiAttributesWithCustom() {
     context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
     context.request().setAttribute("async", true);
     context.request().setAttribute("nomodule", true);
     context.request().setAttribute("type", "text/javascript");
+    context.request().setAttribute("customAttributes", new String[] { "attr1=value1", "data-attr2=5", "attr3" });
     JSInclude underTest = AdaptTo.notNull(context.request(), JSInclude.class);
-    assertEquals("<script async nomodule src=\"/etc/clientlibs/app1/clientlib3.min.js\" type=\"text/javascript\"></script>\n"
-        + "<script async nomodule src=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.js\" type=\"text/javascript\"></script>\n"
-        + "<script async nomodule src=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.js\" type=\"text/javascript\"></script>\n",
+    assertEquals(
+        "<script async attr1=\"value1\" attr3 data-attr2=\"5\" nomodule "
+            + "src=\"/etc/clientlibs/app1/clientlib3.min.js\" type=\"text/javascript\"></script>\n"
+            + "<script async attr1=\"value1\" attr3 data-attr2=\"5\" nomodule "
+            + "src=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.js\" type=\"text/javascript\"></script>\n"
+            + "<script async attr1=\"value1\" attr3 data-attr2=\"5\" nomodule "
+            + "src=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.js\" type=\"text/javascript\"></script>\n",
         underTest.getInclude());
   }
 

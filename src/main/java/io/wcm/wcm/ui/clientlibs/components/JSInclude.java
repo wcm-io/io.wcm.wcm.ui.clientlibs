@@ -82,19 +82,22 @@ public class JSInclude {
   private String referrerpolicy;
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private String type;
+  @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
+  private Object customAttributes;
 
   private String include;
 
   @PostConstruct
   private void activate() {
     // build include string
-    String[] categoryArray = IncludeUtil.toCategoryArray(categories);
+    String[] categoryArray = IncludeUtil.toArray(categories);
     if (categoryArray != null) {
       List<String> libraryPaths = IncludeUtil.getLibraryUrls(htmlLibraryManager, resourceResolver,
           categoryArray, LibraryType.JS);
       if (!libraryPaths.isEmpty()) {
         Map<String, String> attrs = validateAndBuildAttributes();
-        this.include = buildIncludeString(libraryPaths, attrs);
+        Map<String, String> customAttrs = IncludeUtil.getCustomAttributes(customAttributes);
+        this.include = buildIncludeString(libraryPaths, attrs, customAttrs);
       }
     }
   }
@@ -137,13 +140,16 @@ public class JSInclude {
    * Build script tags for all client libraries with the defined custom script tag attributes set.
    * @param libraryPaths Library paths
    * @param attrs HTML attributes for script tag
+   * @param customAttrs Custom HTML attributes for script tag
    * @return HTML markup with script tags
    */
-  private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs) {
+  private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs,
+      @NotNull Map<String, String> customAttrs) {
     StringBuilder markup = new StringBuilder();
     for (String libraryPath : libraryPaths) {
       HtmlTagBuilder builder = new HtmlTagBuilder("script", true, xssApi);
       builder.setAttrs(attrs);
+      builder.setAttrs(customAttrs);
       builder.setAttr("src", libraryPath);
       markup.append(builder.build());
     }

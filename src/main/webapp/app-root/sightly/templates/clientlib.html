@@ -9,13 +9,14 @@
      * @param nonce see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-nonce
      * @param referrerpolicy see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-referrerpolicy
      * @param type see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-type
+     * @param customAttributes List of custom attributes, each list item in syntax 'attr=value' or just 'attr'
      */-->
 <template data-sly-template.js="${@ categories, async, crossorigin, defer, integrity,
-    nomodule, nonce, referrerpolicy, type}">
+    nomodule, nonce, referrerpolicy, type, customAttributes}">
   <sly data-sly-test="${request.getResourceResolver}"
       data-sly-use.clientlib="${'io.wcm.wcm.ui.clientlibs.components.JSInclude' @
       categories=categories, async=async, crossorigin=crossorigin, defer=defer, integrity=integrity,
-      nomodule=nomodule, nonce=nonce, referrerpolicy=referrerpolicy, type=type}">
+      nomodule=nomodule, nonce=nonce, referrerpolicy=referrerpolicy, type=type, customAttributes=customAttributes}">
 ${clientlib.include @ context='unsafe'}
   </sly>
 </template>
@@ -24,11 +25,12 @@ ${clientlib.include @ context='unsafe'}
      * Template used for including CSS client libraries.
      * @param categories Client Library categories
      * @param rel prefetch|preload see https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel
+     * @param customAttributes List of custom attributes, each list item in syntax 'attr=value' or just 'attr'
      */-->
-<template data-sly-template.css="${@ categories, rel}">
+<template data-sly-template.css="${@ categories, customAttributes}">
   <sly data-sly-test="${request.getResourceResolver}"
       data-sly-use.clientlib="${'io.wcm.wcm.ui.clientlibs.components.CSSInclude' @
-      categories=categories, rel=rel}">
+      categories=categories, rel=rel, customAttributes=customAttributes}">
 ${clientlib.include @ context='unsafe'}
   </sly>
 </template>

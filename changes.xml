@@ -30,6 +30,9 @@
       <action type="add" dev="sseifert" issue="3">
         All HTML attributes for JS and CSS includes are now rendered in alphabetically order.
       </action>
+      <action type="add" dev="sseifert" issue="1">
+        Support custom attributes for CSS and JS includes.
+      </action>
       <action type="update" dev="sseifert">
         Switch to Java 11 as minimum version.
       </action>
