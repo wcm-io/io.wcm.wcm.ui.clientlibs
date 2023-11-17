@@ -134,12 +134,13 @@ class JSIncludeTest extends AbstractIncludeTest {
     context.request().setAttribute("type", "text/javascript");
     context.request().setAttribute("customAttributes", new String[] { "attr1=value1", "data-attr2=5", "attr3" });
     JSInclude underTest = AdaptTo.notNull(context.request(), JSInclude.class);
-    assertEquals("<script src=\"/etc/clientlibs/app1/clientlib3.min.js\" "
-        + "async nomodule type=\"text/javascript\" attr1=\"value1\" data-attr2=\"5\" attr3></script>\n"
-        + "<script src=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.js\" "
-        + "async nomodule type=\"text/javascript\" attr1=\"value1\" data-attr2=\"5\" attr3></script>\n"
-        + "<script src=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.js\" "
-        + "async nomodule type=\"text/javascript\" attr1=\"value1\" data-attr2=\"5\" attr3></script>\n",
+    assertEquals(
+        "<script async attr1=\"value1\" attr3 data-attr2=\"5\" nomodule "
+            + "src=\"/etc/clientlibs/app1/clientlib3.min.js\" type=\"text/javascript\"></script>\n"
+            + "<script async attr1=\"value1\" attr3 data-attr2=\"5\" nomodule "
+            + "src=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.js\" type=\"text/javascript\"></script>\n"
+            + "<script async attr1=\"value1\" attr3 data-attr2=\"5\" nomodule "
+            + "src=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.js\" type=\"text/javascript\"></script>\n",
         underTest.getInclude());
   }
 

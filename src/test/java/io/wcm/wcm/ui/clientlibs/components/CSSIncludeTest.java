@@ -89,9 +89,9 @@ class CSSIncludeTest extends AbstractIncludeTest {
     context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
     context.request().setAttribute("customAttributes", new String[] { "attr1=value1", "data-attr2=5", "attr3" });
     CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
-    assertEquals("<link rel=\"stylesheet\" href=\"/etc/clientlibs/app1/clientlib3.min.css\" type=\"text/css\" attr1=\"value1\" data-attr2=\"5\" attr3>\n"
-        + "<link rel=\"stylesheet\" href=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.css\" type=\"text/css\" attr1=\"value1\" data-attr2=\"5\" attr3>\n"
-        + "<link rel=\"stylesheet\" href=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.css\" type=\"text/css\" attr1=\"value1\" data-attr2=\"5\" attr3>\n",
+    assertEquals("<link attr1=\"value1\" attr3 data-attr2=\"5\" href=\"/etc/clientlibs/app1/clientlib3.min.css\" rel=\"stylesheet\" type=\"text/css\">\n"
+        + "<link attr1=\"value1\" attr3 data-attr2=\"5\" href=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.css\" rel=\"stylesheet\" type=\"text/css\">\n"
+        + "<link attr1=\"value1\" attr3 data-attr2=\"5\" href=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.css\" rel=\"stylesheet\" type=\"text/css\">\n",
         underTest.getInclude());
   }
 
