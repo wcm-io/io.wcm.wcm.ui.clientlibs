@@ -104,9 +104,10 @@ class JSIncludeTest extends AbstractIncludeTest {
     context.request().setAttribute("referrerpolicy", "no-referrer");
     context.request().setAttribute("type", "module");
     JSInclude underTest = AdaptTo.notNull(context.request(), JSInclude.class);
-    assertEquals("<script src=\"/etc/clientlibs/app1/clientlib1.min.js\" "
+    assertEquals("<script "
         + "async crossorigin=\"anonymous\" defer integrity=\"value1\" "
-        + "nomodule nonce=\"value2\" referrerpolicy=\"no-referrer\" type=\"module\">"
+        + "nomodule nonce=\"value2\" referrerpolicy=\"no-referrer\" "
+        + "src=\"/etc/clientlibs/app1/clientlib1.min.js\" type=\"module\">"
         + "</script>\n", underTest.getInclude());
   }
 

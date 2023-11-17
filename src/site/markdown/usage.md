@@ -48,6 +48,13 @@ Include CSS without special attributes:
     data-sly-call="${clientlib.css @ categories=['my-clientlib-category']}"/>
 ```
 
+The following advanced link tag attributes are supported:
+
+* `rel` = prefetch | preload (if not given, `rel="stylesheet" type="text/css"` is set)
+
+
+### Custom Attributes
+
 It is possible to set a list of custom attributes:
 
 ```html

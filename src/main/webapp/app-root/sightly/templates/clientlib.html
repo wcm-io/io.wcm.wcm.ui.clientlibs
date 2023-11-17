@@ -5,8 +5,8 @@
      * @param crossorigin anonymous|use-credentials see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-crossorigin
      * @param defer true|false see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-defer
      * @param integrity see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-integrity
-     * @param nomodule true|false https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-nomodule
-     * @param nonce https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-nonce
+     * @param nomodule true|false see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-nomodule
+     * @param nonce see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-nonce
      * @param referrerpolicy see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-referrerpolicy
      * @param type see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-type
      * @param customAttributes List of custom attributes, each list item in syntax 'attr=value' or just 'attr'
@@ -17,20 +17,21 @@
       data-sly-use.clientlib="${'io.wcm.wcm.ui.clientlibs.components.JSInclude' @
       categories=categories, async=async, crossorigin=crossorigin, defer=defer, integrity=integrity,
       nomodule=nomodule, nonce=nonce, referrerpolicy=referrerpolicy, type=type, customAttributes=customAttributes}">
-${clientlib.include @ context='unsafe'}      
+${clientlib.include @ context='unsafe'}
   </sly>
 </template>
 
 <!--/**
      * Template used for including CSS client libraries.
      * @param categories Client Library categories
+     * @param rel prefetch|preload see https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel
      * @param customAttributes List of custom attributes, each list item in syntax 'attr=value' or just 'attr'
      */-->
 <template data-sly-template.css="${@ categories, customAttributes}">
   <sly data-sly-test="${request.getResourceResolver}"
       data-sly-use.clientlib="${'io.wcm.wcm.ui.clientlibs.components.CSSInclude' @
-      categories=categories, customAttributes=customAttributes}">
-${clientlib.include @ context='unsafe'}      
+      categories=categories, rel=rel, customAttributes=customAttributes}">
+${clientlib.include @ context='unsafe'}
   </sly>
 </template>
 
