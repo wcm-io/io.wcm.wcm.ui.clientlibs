@@ -21,14 +21,13 @@ package io.wcm.wcm.ui.clientlibs.components;
 
 import java.lang.reflect.Array;
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.xss.XSSAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -114,7 +113,7 @@ final class IncludeUtil {
     if (customAttributesArray == null) {
       return Collections.emptyMap();
     }
-    Map<String, String> result = new LinkedHashMap<>();
+    Map<String, String> result = new HashMap<>();
     for (String item : customAttributesArray) {
       if (item != null) {
         int separator = item.indexOf('=');
@@ -132,30 +131,6 @@ final class IncludeUtil {
       }
     }
     return result;
-  }
-
-  /**
-   * Builds opening HTML element with given name and attributes.
-   * @param elementName Element name
-   * @param attrs HTML attributes
-   * @param xssApi XSS API
-   * @return HTML element
-   */
-  public static @NotNull String buildHtmlElementOpenTag(@NotNull String elementName, @NotNull Map<String, String> attrs,
-      XSSAPI xssApi) {
-    StringBuilder markup = new StringBuilder();
-    markup.append("<").append(elementName);
-    for (Map.Entry<String, String> attr : attrs.entrySet()) {
-      markup.append(" ");
-      markup.append(attr.getKey());
-      if (attr.getValue() != null) {
-        markup.append("=\"");
-        markup.append(xssApi.encodeForHTMLAttr(attr.getValue()));
-        markup.append("\"");
-      }
-    }
-    markup.append(">");
-    return markup.toString();
   }
 
 }
