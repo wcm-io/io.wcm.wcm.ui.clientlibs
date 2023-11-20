@@ -27,6 +27,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.sling.xss.XSSAPI;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +38,6 @@ import org.mockito.stubbing.Answer;
 import com.adobe.granite.ui.clientlibs.ClientLibrary;
 import com.adobe.granite.ui.clientlibs.HtmlLibraryManager;
 import com.adobe.granite.ui.clientlibs.LibraryType;
-import com.google.common.collect.ImmutableList;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 
@@ -59,9 +59,9 @@ abstract class AbstractIncludeTest {
   void setUp() {
     context.registerService(HtmlLibraryManager.class, htmlLibraryManager);
 
-    Collection<ClientLibrary> single = ImmutableList.of(clientlib("/etc/clientlibs/app1/clientlib1", false));
-    Collection<ClientLibrary> singleProxy = ImmutableList.of(clientlib("/apps/app1/clientlibs/clientlib2_proxy", true));
-    Collection<ClientLibrary> multiple = ImmutableList.of(clientlib("/etc/clientlibs/app1/clientlib3", false),
+    Collection<ClientLibrary> single = List.of(clientlib("/etc/clientlibs/app1/clientlib1", false));
+    Collection<ClientLibrary> singleProxy = List.of(clientlib("/apps/app1/clientlibs/clientlib2_proxy", true));
+    Collection<ClientLibrary> multiple = List.of(clientlib("/etc/clientlibs/app1/clientlib3", false),
         clientlib("/apps/app1/clientlibs/clientlib4_proxy", true),
         clientlib("/libs/app1/clientlibs/clientlib5_proxy", true));
 

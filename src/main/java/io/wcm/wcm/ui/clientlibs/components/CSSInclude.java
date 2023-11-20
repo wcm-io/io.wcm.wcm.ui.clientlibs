@@ -19,7 +19,10 @@
  */
 package io.wcm.wcm.ui.clientlibs.components;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -45,6 +48,9 @@ import com.adobe.granite.ui.clientlibs.LibraryType;
 @ProviderType
 public class CSSInclude {
 
+  private static final Set<String> REL_ALLOWED_VALUES = Set.of(
+      "prefetch", "preload");
+
   @SlingObject
   private ResourceResolver resourceResolver;
   @OSGiService
@@ -54,31 +60,62 @@ public class CSSInclude {
 
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private Object categories;
+  @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
+  private String rel;
+  @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
+  private Object customAttributes;
 
   private String include;
 
   @PostConstruct
   private void activate() {
     // build include string
-    String[] categoryArray = IncludeUtil.toCategoryArray(categories);
+    String[] categoryArray = IncludeUtil.toArray(categories);
     if (categoryArray != null) {
       List<String> libraryPaths = IncludeUtil.getLibraryUrls(htmlLibraryManager, resourceResolver,
           categoryArray, LibraryType.CSS);
       if (!libraryPaths.isEmpty()) {
-        this.include = buildIncludeString(libraryPaths);
+        Map<String, String> attrs = validateAndBuildAttributes();
+        Map<String, String> customAttrs = IncludeUtil.getCustomAttributes(customAttributes);
+        this.include = buildIncludeString(libraryPaths, attrs, customAttrs);
       }
     }
   }
 
   /**
+   * Validate attribute values from HTL script, escape them properly and build a map with all attributes
+   * for the resulting script tag(s).
+   * @return Map with attribute for script tag
+   */
+  private @NotNull Map<String, String> validateAndBuildAttributes() {
+    Map<String, String> attrs = new HashMap<>();
+    if (rel != null && REL_ALLOWED_VALUES.contains(rel)) {
+      attrs.put("rel", rel);
+    }
+    else {
+      // no specific rel defined, provide default rel/type attrs for CSS
+      attrs.put("rel", "stylesheet");
+      attrs.put("type", "text/css");
+    }
+    return attrs;
+  }
+
+  /**
    * Build CSS link tags for all client libraries with the defined custom script tag attributes set.
    * @param libraryPaths Library paths
+   * @param attrs HTML attributes for link tag
+   * @param customAttrs Custom HTML attributes for script tag
    * @return HTML markup with script tags
    */
-  private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths) {
+  private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs,
+      @NotNull Map<String, String> customAttrs) {
     StringBuilder markup = new StringBuilder();
     for (String libraryPath : libraryPaths) {
-      markup.append("<link rel=\"stylesheet\" href=\"" + xssApi.encodeForHTMLAttr(libraryPath) + "\" type=\"text/css\">\n");
+      HtmlTagBuilder builder = new HtmlTagBuilder("link", false, xssApi);
+      builder.setAttrs(attrs);
+      builder.setAttrs(customAttrs);
+      builder.setAttr("href", libraryPath);
+      markup.append(builder.build());
     }
     return markup.toString();
   }

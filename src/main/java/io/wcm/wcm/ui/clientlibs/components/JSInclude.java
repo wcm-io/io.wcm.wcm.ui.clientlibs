@@ -19,12 +19,10 @@
  */
 package io.wcm.wcm.ui.clientlibs.components;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
 
@@ -51,13 +49,13 @@ import com.adobe.granite.ui.clientlibs.LibraryType;
 @ProviderType
 public class JSInclude {
 
-  private static final Set CROSSORIGIN_ALLOWED_VALUES = new HashSet<>(Arrays.asList(
-      "anonymous", "use-credentials"));
-  private static final Set REFERRERPOLICY_ALLOWED_VALUES = new HashSet<>(Arrays.asList(
+  private static final Set<String> CROSSORIGIN_ALLOWED_VALUES = Set.of(
+      "anonymous", "use-credentials");
+  private static final Set<String> REFERRERPOLICY_ALLOWED_VALUES = Set.of(
       "no-referrer", "no-referrer-when-downgrade", "origin", "origin-when-cross-origin",
-      "same-origin", "strict-origin", "strict-origin-when-cross-origin", "unsafe-url"));
-  private static final Set TYPE_ALLOWED_VALUES = new HashSet<>(Arrays.asList(
-      "text/javascript", "module"));
+      "same-origin", "strict-origin", "strict-origin-when-cross-origin", "unsafe-url");
+  private static final Set<String> TYPE_ALLOWED_VALUES = Set.of(
+      "text/javascript", "module");
 
   @SlingObject
   private ResourceResolver resourceResolver;
@@ -84,19 +82,22 @@ public class JSInclude {
   private String referrerpolicy;
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private String type;
+  @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
+  private Object customAttributes;
 
   private String include;
 
   @PostConstruct
   private void activate() {
     // build include string
-    String[] categoryArray = IncludeUtil.toCategoryArray(categories);
+    String[] categoryArray = IncludeUtil.toArray(categories);
     if (categoryArray != null) {
       List<String> libraryPaths = IncludeUtil.getLibraryUrls(htmlLibraryManager, resourceResolver,
           categoryArray, LibraryType.JS);
       if (!libraryPaths.isEmpty()) {
         Map<String, String> attrs = validateAndBuildAttributes();
-        this.include = buildIncludeString(libraryPaths, attrs);
+        Map<String, String> customAttrs = IncludeUtil.getCustomAttributes(customAttributes);
+        this.include = buildIncludeString(libraryPaths, attrs, customAttrs);
       }
     }
   }
@@ -107,11 +108,11 @@ public class JSInclude {
    * @return Map with attribute for script tag
    */
   private @NotNull Map<String, String> validateAndBuildAttributes() {
-    Map<String, String> attrs = new TreeMap<>();
+    Map<String, String> attrs = new HashMap<>();
     if (async) {
       attrs.put("async", null);
     }
-    if (CROSSORIGIN_ALLOWED_VALUES.contains(crossorigin)) {
+    if (crossorigin != null && CROSSORIGIN_ALLOWED_VALUES.contains(crossorigin)) {
       attrs.put("crossorigin", crossorigin);
     }
     if (defer) {
@@ -126,10 +127,10 @@ public class JSInclude {
     if (StringUtils.isNotEmpty(nonce)) {
       attrs.put("nonce", xssApi.encodeForHTMLAttr(nonce));
     }
-    if (REFERRERPOLICY_ALLOWED_VALUES.contains(referrerpolicy)) {
+    if (referrerpolicy != null && REFERRERPOLICY_ALLOWED_VALUES.contains(referrerpolicy)) {
       attrs.put("referrerpolicy", referrerpolicy);
     }
-    if (TYPE_ALLOWED_VALUES.contains(type)) {
+    if (type != null && TYPE_ALLOWED_VALUES.contains(type)) {
       attrs.put("type", type);
     }
     return attrs;
@@ -139,22 +140,18 @@ public class JSInclude {
    * Build script tags for all client libraries with the defined custom script tag attributes set.
    * @param libraryPaths Library paths
    * @param attrs HTML attributes for script tag
+   * @param customAttrs Custom HTML attributes for script tag
    * @return HTML markup with script tags
    */
-  private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs) {
+  private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs,
+      @NotNull Map<String, String> customAttrs) {
     StringBuilder markup = new StringBuilder();
     for (String libraryPath : libraryPaths) {
-      markup.append("<script src=\"" + xssApi.encodeForHTMLAttr(libraryPath) + "\"");
-      for (Map.Entry<String, String> attr : attrs.entrySet()) {
-        markup.append(" ");
-        markup.append(attr.getKey());
-        if (attr.getValue() != null) {
-          markup.append("=\"");
-          markup.append(attr.getValue());
-          markup.append("\"");
-        }
-      }
-      markup.append("></script>\n");
+      HtmlTagBuilder builder = new HtmlTagBuilder("script", true, xssApi);
+      builder.setAttrs(attrs);
+      builder.setAttrs(customAttrs);
+      builder.setAttr("src", libraryPath);
+      markup.append(builder.build());
     }
     return markup.toString();
   }
