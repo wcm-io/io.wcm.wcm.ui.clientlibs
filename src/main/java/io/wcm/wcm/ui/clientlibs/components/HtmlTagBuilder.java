@@ -70,9 +70,9 @@ class HtmlTagBuilder {
     for (Map.Entry<String, String> attr : this.attrs.entrySet()) {
       markup.append(" ").append(attr.getKey());
       if (attr.getValue() != null) {
-        markup.append("=\"");
-        markup.append(xssApi.encodeForHTMLAttr(attr.getValue()));
-        markup.append("\"");
+        markup.append("=\"")
+            .append(xssApi.encodeForHTMLAttr(attr.getValue()))
+            .append("\"");
       }
     }
     markup.append(">");
