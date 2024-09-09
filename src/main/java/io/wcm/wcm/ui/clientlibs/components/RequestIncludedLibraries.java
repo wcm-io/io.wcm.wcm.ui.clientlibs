@@ -20,7 +20,9 @@
 package io.wcm.wcm.ui.clientlibs.components;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.apache.sling.api.SlingHttpServletRequest;
 
@@ -69,6 +71,29 @@ class RequestIncludedLibraries {
    */
   void storeIncluded(@NotNull String libraryPath) {
     getLibaryPathsSetFromRequest().add(libraryPath);
+  }
+
+  /**
+   * Builds the markup for all given HTML libraries that are not already included in the current request.
+   * @param libraryPaths Library paths
+   * @param htmlTagBuilderFactory Factory to create HTML tag builders
+   * @return Markup
+   */
+  String buildMarkupIgnoringDuplicateLibraries(@NotNull List<String> libraryPaths,
+      @NotNull Function<String, HtmlTagBuilder> htmlTagBuilderFactory) {
+    RequestIncludedLibraries includedLibraries = new RequestIncludedLibraries(request);
+    StringBuilder markup = new StringBuilder();
+    for (String libraryPath : libraryPaths) {
+      // ignore libraries that are already included
+      if (includedLibraries.isInlucded(libraryPath)) {
+        continue;
+      }
+      // build markup for library
+      markup.append(htmlTagBuilderFactory.apply(libraryPath).build());
+      // mark library as included
+      includedLibraries.storeIncluded(libraryPath);
+    }
+    return markup.toString();
   }
 
 }

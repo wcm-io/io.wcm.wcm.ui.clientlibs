@@ -111,22 +111,13 @@ public class CSSInclude {
    */
   private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs,
       @NotNull Map<String, String> customAttrs) {
-    RequestIncludedLibraries includedLibraries = new RequestIncludedLibraries(request);
-    StringBuilder markup = new StringBuilder();
-    for (String libraryPath : libraryPaths) {
-      // ignore libraries that are already included
-      if (includedLibraries.isInlucded(libraryPath)) {
-        continue;
-      }
+    return new RequestIncludedLibraries(request).buildMarkupIgnoringDuplicateLibraries(libraryPaths, libraryPath -> {
       HtmlTagBuilder builder = new HtmlTagBuilder("link", false, xssApi);
       builder.setAttrs(attrs);
       builder.setAttrs(customAttrs);
       builder.setAttr("href", request.getContextPath() + libraryPath);
-      markup.append(builder.build());
-      // mark library as included
-      includedLibraries.storeIncluded(libraryPath);
-    }
-    return markup.toString();
+      return builder;
+    });
   }
 
   /**

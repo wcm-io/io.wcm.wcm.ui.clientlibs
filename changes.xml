@@ -24,10 +24,10 @@
   <body>
 
     <release version="1.4.0" date="not released">
-      <action type="update" dev="sseifert">
+      <action type="update" dev="sseifert" issue="5">
         Do not include JS/CSS client libraries twice if the same library is requested multiple times within one request.
       </action>
-      <action type="update" dev="sseifert">
+      <action type="update" dev="sseifert" issue="5">
         Ensure request context path is added to client library URLs.
       </action>
       <action type="update" dev="sseifert">
