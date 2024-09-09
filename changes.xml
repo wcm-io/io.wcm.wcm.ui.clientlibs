@@ -23,7 +23,13 @@
     xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/plugins/maven-changes-plugin/xsd/changes-1.0.0.xsd">
   <body>
 
-    <release version="1.3.2" date="not released">
+    <release version="1.4.0" date="not released">
+      <action type="update" dev="sseifert">
+        Do not include JS/CSS client libraries twice if the same library is requested multiple times within one request.
+      </action>
+      <action type="update" dev="sseifert">
+        Ensure request context path is added to client library URLs.
+      </action>
       <action type="update" dev="sseifert">
         Switch to AEM 6.5.17 as minimum version.
       </action>

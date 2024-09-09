@@ -46,6 +46,14 @@ class JSIncludeTest extends AbstractIncludeTest {
   }
 
   @Test
+  void testSingleNoAttributes_ContextPath() {
+    context.request().setContextPath("/mycontext");
+    context.request().setAttribute("categories", CATEGORY_SINGLE);
+    JSInclude underTest = AdaptTo.notNull(context.request(), JSInclude.class);
+    assertEquals("<script src=\"/mycontext/etc/clientlibs/app1/clientlib1.min.js\"></script>\n", underTest.getInclude());
+  }
+
+  @Test
   void testSingleNoAttributesUnminified() {
     when(htmlLibraryManager.isMinifyEnabled()).thenReturn(false);
     context.request().setAttribute("categories", CATEGORY_SINGLE);
@@ -141,6 +149,27 @@ class JSIncludeTest extends AbstractIncludeTest {
             + "src=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.js\" type=\"text/javascript\"></script>\n"
             + "<script async attr1=\"value1\" attr3 data-attr2=\"5\" nomodule "
             + "src=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.js\" type=\"text/javascript\"></script>\n",
+        underTest.getInclude());
+  }
+
+  @Test
+  void testMultiIgnoreDuplicates() {
+    context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    JSInclude underTest = AdaptTo.notNull(context.request(), JSInclude.class);
+    assertEquals("<script src=\"/etc/clientlibs/app1/clientlib3.min.js\"></script>\n"
+        + "<script src=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.js\"></script>\n"
+        + "<script src=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.js\"></script>\n",
+        underTest.getInclude());
+
+    // include again - should not include anything
+    context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    underTest = AdaptTo.notNull(context.request(), JSInclude.class);
+    assertEquals("", underTest.getInclude());
+
+    // include something different - should include again
+    context.request().setAttribute("categories", CATEGORY_SINGLE);
+    underTest = AdaptTo.notNull(context.request(), JSInclude.class);
+    assertEquals("<script src=\"/etc/clientlibs/app1/clientlib1.min.js\"></script>\n",
         underTest.getInclude());
   }
 

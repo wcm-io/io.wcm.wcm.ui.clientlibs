@@ -58,6 +58,8 @@ public class JSInclude {
       "text/javascript", "module");
 
   @SlingObject
+  private SlingHttpServletRequest request;
+  @SlingObject
   private ResourceResolver resourceResolver;
   @OSGiService
   private HtmlLibraryManager htmlLibraryManager;
@@ -145,13 +147,20 @@ public class JSInclude {
    */
   private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs,
       @NotNull Map<String, String> customAttrs) {
+    RequestIncludedLibraries includedLibraries = new RequestIncludedLibraries(request);
     StringBuilder markup = new StringBuilder();
     for (String libraryPath : libraryPaths) {
+      // ignore libraries that are already included
+      if (includedLibraries.isInlucded(libraryPath)) {
+        continue;
+      }
       HtmlTagBuilder builder = new HtmlTagBuilder("script", true, xssApi);
       builder.setAttrs(attrs);
       builder.setAttrs(customAttrs);
-      builder.setAttr("src", libraryPath);
+      builder.setAttr("src", request.getContextPath() + libraryPath);
       markup.append(builder.build());
+      // mark library as included
+      includedLibraries.storeIncluded(libraryPath);
     }
     return markup.toString();
   }

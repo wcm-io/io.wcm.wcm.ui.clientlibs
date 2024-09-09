@@ -48,6 +48,15 @@ class CSSIncludeTest extends AbstractIncludeTest {
         underTest.getInclude());
   }
 
+  @Test
+  void testSingle_ContextPath() {
+    context.request().setContextPath("/mycontext");
+    context.request().setAttribute("categories", CATEGORY_SINGLE);
+    CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
+    assertEquals("<link href=\"/mycontext/etc/clientlibs/app1/clientlib1.min.css\" rel=\"stylesheet\" type=\"text/css\">\n",
+        underTest.getInclude());
+  }
+
   @ParameterizedTest
   @ValueSource(strings = { "preload", "prefetch" })
   void testSingle_rel_valid(String validRelParameter) {
@@ -116,6 +125,27 @@ class CSSIncludeTest extends AbstractIncludeTest {
     context.resourceResolver().delete(context.resourceResolver().getResource("/etc/clientlibs/app1/clientlib1"));
     CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
     assertNull(underTest.getInclude());
+  }
+
+  @Test
+  void testMultiIgnoreDuplicates() {
+    context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
+    assertEquals("<link href=\"/etc/clientlibs/app1/clientlib3.min.css\" rel=\"stylesheet\" type=\"text/css\">\n"
+        + "<link href=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.css\" rel=\"stylesheet\" type=\"text/css\">\n"
+        + "<link href=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.css\" rel=\"stylesheet\" type=\"text/css\">\n",
+        underTest.getInclude());
+
+    // include again - should not include anything
+    context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
+    assertEquals("", underTest.getInclude());
+
+    // include something different - should include again
+    context.request().setAttribute("categories", CATEGORY_SINGLE);
+    underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
+    assertEquals("<link href=\"/etc/clientlibs/app1/clientlib1.min.css\" rel=\"stylesheet\" type=\"text/css\">\n",
+        underTest.getInclude());
   }
 
 }
