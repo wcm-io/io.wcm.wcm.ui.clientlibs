@@ -118,7 +118,7 @@ public class CSSInclude {
           HtmlTagBuilder builder = new HtmlTagBuilder("link", false, xssApi);
           builder.setAttrs(attrs);
           builder.setAttrs(customAttrs);
-          builder.setAttr("href", request.getContextPath() + libraryPath);
+          builder.setAttr("href", IncludeUtil.appendRequestPath(libraryPath, request));
           return builder;
         });
   }

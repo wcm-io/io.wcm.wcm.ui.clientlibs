@@ -27,8 +27,11 @@
       <action type="update" dev="sseifert" issue="5">
         Do not include JS/CSS client libraries twice if the same library is requested multiple times within one request.
       </action>
-      <action type="update" dev="sseifert" issue="5">
+      <action type="fix" dev="sseifert" issue="6">
         Ensure request context path is added to client library URLs.
+      </action>
+      <action type="fix" dev="sseifert" issue="7">
+        CSS Include: Fix handling of "rel" property.
       </action>
       <action type="update" dev="sseifert">
         Switch to AEM 6.5.17 as minimum version.

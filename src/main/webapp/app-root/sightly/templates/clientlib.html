@@ -30,7 +30,7 @@ ${clientlib.include @ context='unsafe'}
      * @param allowMultipleIncludes If set to true, duplicate inclusions of this client library in a single request are not eliminated.
      * @param customAttributes List of custom attributes, each list item in syntax 'attr=value' or just 'attr'
      */-->
-<template data-sly-template.css="${@ categories, allowMultipleIncludes, customAttributes}">
+<template data-sly-template.css="${@ categories, rel, allowMultipleIncludes, customAttributes}">
   <sly data-sly-test="${request.getResourceResolver}"
       data-sly-use.clientlib="${'io.wcm.wcm.ui.clientlibs.components.CSSInclude' @
       categories=categories, rel=rel,
