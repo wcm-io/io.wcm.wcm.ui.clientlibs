@@ -173,4 +173,22 @@ class JSIncludeTest extends AbstractIncludeTest {
         underTest.getInclude());
   }
 
+  @Test
+  void testMultiAllowDuplicates() {
+    final String expectedInclude = "<script src=\"/etc/clientlibs/app1/clientlib3.min.js\"></script>\n"
+        + "<script src=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.js\"></script>\n"
+        + "<script src=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.js\"></script>\n";
+
+    context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    context.request().setAttribute("allowMultipleIncludes", "true");
+    JSInclude underTest = AdaptTo.notNull(context.request(), JSInclude.class);
+    assertEquals(expectedInclude, underTest.getInclude());
+
+    // include again - should be included again (no duplicates removed)
+    context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    context.request().setAttribute("allowMultipleIncludes", "true");
+    underTest = AdaptTo.notNull(context.request(), JSInclude.class);
+    assertEquals(expectedInclude, underTest.getInclude());
+  }
+
 }

@@ -27,6 +27,7 @@ The following advanced script tag attributes are supported:
 * `nonce` = {string}
 * `referrerpolicy` = no-referrer | no-referrer-when-downgrade | origin | origin-when-cross-origin | same-origin | strict-origin | strict-origin-when-cross-origin | unsafe-url
 * `type` = module | text/javascript
+* `allowMultipleIncludes` - by default, multiple includes of the same script in a single request are eliminated. If setting this property to `true`, they are included multiple times if requested.
 * `customAttributes` - set arbitrary HTML attributes, e.g. `customAttributes=['attr1=value 1','data-attr2=5','attr3']`
 
 See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#Attributes for a full documentation of this attributes.
@@ -44,4 +45,5 @@ Include CSS without special attributes:
 The following advanced link tag attributes are supported:
 
 * `rel` = prefetch | preload (if not given, `rel="stylesheet" type="text/css"` is set)
+* `allowMultipleIncludes` - by default, multiple includes of the same script in a single request are eliminated. If setting this property to `true`, they are included multiple times if requested.
 * `customAttributes` - set arbitrary HTML attributes, e.g. `customAttributes=['attr1=value 1','data-attr2=5','attr3']`

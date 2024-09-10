@@ -148,4 +148,23 @@ class CSSIncludeTest extends AbstractIncludeTest {
         underTest.getInclude());
   }
 
+  @Test
+  void testMultiAllowDuplicates() {
+    final String expectedInclude = "<link href=\"/etc/clientlibs/app1/clientlib3.min.css\" rel=\"stylesheet\" type=\"text/css\">\n"
+        + "<link href=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.css\" rel=\"stylesheet\" type=\"text/css\">\n"
+        + "<link href=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.css\" rel=\"stylesheet\" type=\"text/css\">\n";
+
+    context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    context.request().setAttribute("allowMultipleIncludes", "true");
+    CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
+    assertEquals(expectedInclude,
+        underTest.getInclude());
+
+    // include again - should be included again (no duplicates removed)
+    context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    context.request().setAttribute("allowMultipleIncludes", "true");
+    underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
+    assertEquals(expectedInclude, underTest.getInclude());
+  }
+
 }

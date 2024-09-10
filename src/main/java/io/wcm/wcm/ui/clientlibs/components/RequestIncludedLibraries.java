@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
+import org.jetbrains.annotations.Nullable;
 
 import com.adobe.granite.ui.clientlibs.HtmlLibraryManager;
 import com.drew.lang.annotations.NotNull;
@@ -38,9 +40,12 @@ class RequestIncludedLibraries {
   private static final String RA_INCLUDED_LIBRARY_PATHS = HtmlLibraryManager.class.getName() + ".included";
 
   private final SlingHttpServletRequest request;
+  private final boolean allowMultipleIncludes;
 
-  RequestIncludedLibraries(SlingHttpServletRequest request) {
+  RequestIncludedLibraries(@NotNull SlingHttpServletRequest request,
+      @Nullable String allowMultipleIncludes) {
     this.request = request;
+    this.allowMultipleIncludes = BooleanUtils.toBoolean(allowMultipleIncludes);
   }
 
   /**
@@ -81,17 +86,16 @@ class RequestIncludedLibraries {
    */
   String buildMarkupIgnoringDuplicateLibraries(@NotNull List<String> libraryPaths,
       @NotNull Function<String, HtmlTagBuilder> htmlTagBuilderFactory) {
-    RequestIncludedLibraries includedLibraries = new RequestIncludedLibraries(request);
     StringBuilder markup = new StringBuilder();
     for (String libraryPath : libraryPaths) {
       // ignore libraries that are already included
-      if (includedLibraries.isInlucded(libraryPath)) {
+      if (!allowMultipleIncludes && isInlucded(libraryPath)) {
         continue;
       }
       // build markup for library
       markup.append(htmlTagBuilderFactory.apply(libraryPath).build());
       // mark library as included
-      includedLibraries.storeIncluded(libraryPath);
+      storeIncluded(libraryPath);
     }
     return markup.toString();
   }

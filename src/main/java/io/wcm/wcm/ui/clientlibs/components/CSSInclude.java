@@ -65,6 +65,8 @@ public class CSSInclude {
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private String rel;
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
+  private String allowMultipleIncludes;
+  @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private Object customAttributes;
 
   private String include;
@@ -111,13 +113,14 @@ public class CSSInclude {
    */
   private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs,
       @NotNull Map<String, String> customAttrs) {
-    return new RequestIncludedLibraries(request).buildMarkupIgnoringDuplicateLibraries(libraryPaths, libraryPath -> {
-      HtmlTagBuilder builder = new HtmlTagBuilder("link", false, xssApi);
-      builder.setAttrs(attrs);
-      builder.setAttrs(customAttrs);
-      builder.setAttr("href", request.getContextPath() + libraryPath);
-      return builder;
-    });
+    return new RequestIncludedLibraries(request, allowMultipleIncludes)
+        .buildMarkupIgnoringDuplicateLibraries(libraryPaths, libraryPath -> {
+          HtmlTagBuilder builder = new HtmlTagBuilder("link", false, xssApi);
+          builder.setAttrs(attrs);
+          builder.setAttrs(customAttrs);
+          builder.setAttr("href", request.getContextPath() + libraryPath);
+          return builder;
+        });
   }
 
   /**

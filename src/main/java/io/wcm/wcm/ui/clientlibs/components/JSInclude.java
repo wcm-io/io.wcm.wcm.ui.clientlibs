@@ -85,6 +85,8 @@ public class JSInclude {
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private String type;
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
+  private String allowMultipleIncludes;
+  @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private Object customAttributes;
 
   private String include;
@@ -147,13 +149,14 @@ public class JSInclude {
    */
   private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs,
       @NotNull Map<String, String> customAttrs) {
-    return new RequestIncludedLibraries(request).buildMarkupIgnoringDuplicateLibraries(libraryPaths, libraryPath -> {
-      HtmlTagBuilder builder = new HtmlTagBuilder("script", true, xssApi);
-      builder.setAttrs(attrs);
-      builder.setAttrs(customAttrs);
-      builder.setAttr("src", request.getContextPath() + libraryPath);
-      return builder;
-    });
+    return new RequestIncludedLibraries(request, allowMultipleIncludes)
+        .buildMarkupIgnoringDuplicateLibraries(libraryPaths, libraryPath -> {
+          HtmlTagBuilder builder = new HtmlTagBuilder("script", true, xssApi);
+          builder.setAttrs(attrs);
+          builder.setAttrs(customAttrs);
+          builder.setAttr("src", request.getContextPath() + libraryPath);
+          return builder;
+        });
   }
 
   /**
