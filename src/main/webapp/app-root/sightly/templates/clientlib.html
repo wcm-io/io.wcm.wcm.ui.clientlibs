@@ -27,7 +27,7 @@ ${clientlib.include @ context='unsafe'}
      * @param rel prefetch|preload see https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel
      * @param customAttributes List of custom attributes, each list item in syntax 'attr=value' or just 'attr'
      */-->
-<template data-sly-template.css="${@ categories, customAttributes}">
+<template data-sly-template.css="${@ categories, rel, customAttributes}">
   <sly data-sly-test="${request.getResourceResolver}"
       data-sly-use.clientlib="${'io.wcm.wcm.ui.clientlibs.components.CSSInclude' @
       categories=categories, rel=rel, customAttributes=customAttributes}">
