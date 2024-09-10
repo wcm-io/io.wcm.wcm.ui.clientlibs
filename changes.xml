@@ -24,8 +24,9 @@
   <body>
 
     <release version="1.4.0" date="not released">
-      <action type="update" dev="sseifert" issue="5">
+      <action type="add" dev="sseifert" issue="5">
         Do not include JS/CSS client libraries twice if the same library is requested multiple times within one request.
+        This new behavior can be disabled by setting allowMultipleIncludes=true.
       </action>
       <action type="fix" dev="sseifert" issue="6">
         Ensure request context path is added to client library URLs.
