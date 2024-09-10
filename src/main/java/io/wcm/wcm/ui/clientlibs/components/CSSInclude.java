@@ -52,6 +52,8 @@ public class CSSInclude {
       "prefetch", "preload");
 
   @SlingObject
+  private SlingHttpServletRequest request;
+  @SlingObject
   private ResourceResolver resourceResolver;
   @OSGiService
   private HtmlLibraryManager htmlLibraryManager;
@@ -114,7 +116,7 @@ public class CSSInclude {
       HtmlTagBuilder builder = new HtmlTagBuilder("link", false, xssApi);
       builder.setAttrs(attrs);
       builder.setAttrs(customAttrs);
-      builder.setAttr("href", libraryPath);
+      builder.setAttr("href", IncludeUtil.appendRequestPath(libraryPath, request));
       markup.append(builder.build());
     }
     return markup.toString();

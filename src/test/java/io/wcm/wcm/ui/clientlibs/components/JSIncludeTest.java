@@ -46,6 +46,14 @@ class JSIncludeTest extends AbstractIncludeTest {
   }
 
   @Test
+  void testSingleNoAttributes_ContextPath() {
+    context.request().setContextPath("/mycontext");
+    context.request().setAttribute("categories", CATEGORY_SINGLE);
+    JSInclude underTest = AdaptTo.notNull(context.request(), JSInclude.class);
+    assertEquals("<script src=\"/mycontext/etc/clientlibs/app1/clientlib1.min.js\"></script>\n", underTest.getInclude());
+  }
+
+  @Test
   void testSingleNoAttributesUnminified() {
     when(htmlLibraryManager.isMinifyEnabled()).thenReturn(false);
     context.request().setAttribute("categories", CATEGORY_SINGLE);

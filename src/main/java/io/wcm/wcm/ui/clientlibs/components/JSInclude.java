@@ -58,6 +58,8 @@ public class JSInclude {
       "text/javascript", "module");
 
   @SlingObject
+  private SlingHttpServletRequest request;
+  @SlingObject
   private ResourceResolver resourceResolver;
   @OSGiService
   private HtmlLibraryManager htmlLibraryManager;
@@ -150,7 +152,7 @@ public class JSInclude {
       HtmlTagBuilder builder = new HtmlTagBuilder("script", true, xssApi);
       builder.setAttrs(attrs);
       builder.setAttrs(customAttrs);
-      builder.setAttr("src", libraryPath);
+      builder.setAttr("src", IncludeUtil.appendRequestPath(libraryPath, request));
       markup.append(builder.build());
     }
     return markup.toString();
