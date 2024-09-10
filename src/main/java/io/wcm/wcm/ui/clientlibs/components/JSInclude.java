@@ -152,7 +152,7 @@ public class JSInclude {
       HtmlTagBuilder builder = new HtmlTagBuilder("script", true, xssApi);
       builder.setAttrs(attrs);
       builder.setAttrs(customAttrs);
-      builder.setAttr("src", request.getContextPath() + libraryPath);
+      builder.setAttr("src", IncludeUtil.appendRequestPath(libraryPath, request));
       markup.append(builder.build());
     }
     return markup.toString();

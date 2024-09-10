@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -131,6 +132,16 @@ final class IncludeUtil {
       }
     }
     return result;
+  }
+
+  /**
+   * Appends context path from current request.
+   * @param path Path
+   * @param request Current request
+   * @return Path with context path
+   */
+  public static @NotNull String appendRequestPath(@NotNull String path, @NotNull SlingHttpServletRequest request) {
+    return request.getContextPath() + path;
   }
 
 }
