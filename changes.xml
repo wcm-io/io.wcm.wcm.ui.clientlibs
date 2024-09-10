@@ -25,6 +25,9 @@
 
     <release version="1.3.2" date="not released">
       <action type="update" dev="sseifert">
+        Ensure request context path is added to client library URLs.
+      </action>
+      <action type="update" dev="sseifert">
         Switch to AEM 6.5.17 as minimum version.
       </action>
     </release>

@@ -48,6 +48,15 @@ class CSSIncludeTest extends AbstractIncludeTest {
         underTest.getInclude());
   }
 
+  @Test
+  void testSingle_ContextPath() {
+    context.request().setContextPath("/mycontext");
+    context.request().setAttribute("categories", CATEGORY_SINGLE);
+    CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
+    assertEquals("<link href=\"/mycontext/etc/clientlibs/app1/clientlib1.min.css\" rel=\"stylesheet\" type=\"text/css\">\n",
+        underTest.getInclude());
+  }
+
   @ParameterizedTest
   @ValueSource(strings = { "preload", "prefetch" })
   void testSingle_rel_valid(String validRelParameter) {

@@ -97,7 +97,7 @@ final class IncludeUtil {
       path = "/etc.clientlibs" + path.substring(5);
     }
     else if (resourceResolver.getResource(library.getPath()) == null) {
-      // current render resourcer resolver has no access to the client library - ignore it
+      // current render resource resolver has no access to the client library - ignore it
       path = null;
     }
     return path;
