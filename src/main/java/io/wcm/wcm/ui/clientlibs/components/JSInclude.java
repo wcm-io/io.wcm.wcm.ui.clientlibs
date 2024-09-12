@@ -85,7 +85,7 @@ public class JSInclude {
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private String type;
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
-  private String allowMultipleIncludes;
+  private Object allowMultipleIncludes;
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private Object customAttributes;
 

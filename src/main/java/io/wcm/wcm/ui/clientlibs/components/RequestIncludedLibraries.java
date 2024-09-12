@@ -43,9 +43,9 @@ class RequestIncludedLibraries {
   private final boolean allowMultipleIncludes;
 
   RequestIncludedLibraries(@NotNull SlingHttpServletRequest request,
-      @Nullable String allowMultipleIncludes) {
+      @Nullable Object allowMultipleIncludes) {
     this.request = request;
-    this.allowMultipleIncludes = BooleanUtils.toBoolean(allowMultipleIncludes);
+    this.allowMultipleIncludes = toBoolean(allowMultipleIncludes);
   }
 
   /**
@@ -98,6 +98,16 @@ class RequestIncludedLibraries {
       storeIncluded(libraryPath);
     }
     return markup.toString();
+  }
+
+  private static boolean toBoolean(Object value) {
+    if (value instanceof Boolean) {
+      return (Boolean)value;
+    }
+    else if (value instanceof String) {
+      return BooleanUtils.toBoolean((String)value);
+    }
+    return false;
   }
 
 }

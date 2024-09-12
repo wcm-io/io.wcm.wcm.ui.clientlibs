@@ -65,7 +65,7 @@ public class CSSInclude {
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private String rel;
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
-  private String allowMultipleIncludes;
+  private Object allowMultipleIncludes;
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private Object customAttributes;
 
