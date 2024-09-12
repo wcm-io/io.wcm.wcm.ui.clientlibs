@@ -28,9 +28,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.apache.sling.xss.XSSAPI;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.provider.Arguments;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -97,6 +99,12 @@ abstract class AbstractIncludeTest {
     when(clientlib.allowProxy()).thenReturn(allowProxy);
     context.create().resource(path);
     return clientlib;
+  }
+
+  static Stream<Arguments> booleanTrueVariants() {
+    return Stream.of(
+        Arguments.of(true),
+        Arguments.of("true"));
   }
 
 }

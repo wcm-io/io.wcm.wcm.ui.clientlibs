@@ -27,6 +27,7 @@ import org.apache.sling.api.resource.PersistenceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -125,6 +126,47 @@ class CSSIncludeTest extends AbstractIncludeTest {
     context.resourceResolver().delete(context.resourceResolver().getResource("/etc/clientlibs/app1/clientlib1"));
     CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
     assertNull(underTest.getInclude());
+  }
+
+  @Test
+  void testMultiIgnoreDuplicates() {
+    context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
+    assertEquals("<link href=\"/etc/clientlibs/app1/clientlib3.min.css\" rel=\"stylesheet\" type=\"text/css\">\n"
+        + "<link href=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.css\" rel=\"stylesheet\" type=\"text/css\">\n"
+        + "<link href=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.css\" rel=\"stylesheet\" type=\"text/css\">\n",
+        underTest.getInclude());
+
+    // include again - should not include anything
+    context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
+    assertEquals("", underTest.getInclude());
+
+    // include something different - should include again
+    context.request().setAttribute("categories", CATEGORY_SINGLE);
+    underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
+    assertEquals("<link href=\"/etc/clientlibs/app1/clientlib1.min.css\" rel=\"stylesheet\" type=\"text/css\">\n",
+        underTest.getInclude());
+  }
+
+  @ParameterizedTest
+  @MethodSource("booleanTrueVariants")
+  void testMultiAllowDuplicates(Object trueValue) {
+    final String expectedInclude = "<link href=\"/etc/clientlibs/app1/clientlib3.min.css\" rel=\"stylesheet\" type=\"text/css\">\n"
+        + "<link href=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.css\" rel=\"stylesheet\" type=\"text/css\">\n"
+        + "<link href=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.css\" rel=\"stylesheet\" type=\"text/css\">\n";
+
+    context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    context.request().setAttribute("allowMultipleIncludes", trueValue);
+    CSSInclude underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
+    assertEquals(expectedInclude,
+        underTest.getInclude());
+
+    // include again - should be included again (no duplicates removed)
+    context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    context.request().setAttribute("allowMultipleIncludes", trueValue);
+    underTest = AdaptTo.notNull(context.request(), CSSInclude.class);
+    assertEquals(expectedInclude, underTest.getInclude());
   }
 
 }
