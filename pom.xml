@@ -31,7 +31,7 @@
 
   <groupId>io.wcm</groupId>
   <artifactId>io.wcm.wcm.ui.clientlibs</artifactId>
-  <version>1.3.1-SNAPSHOT</version>
+  <version>1.4.0</version>
   <packaging>jar</packaging>
 
   <name>WCM Clientlibs UI Extensions</name>
@@ -49,7 +49,7 @@
     <site.url.module.prefix>wcm/ui/clientlibs</site.url.module.prefix>
 
     <!-- Enable reproducible builds -->
-    <project.build.outputTimestamp>2023-11-20T15:26:56Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-09-16T09:10:07Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
