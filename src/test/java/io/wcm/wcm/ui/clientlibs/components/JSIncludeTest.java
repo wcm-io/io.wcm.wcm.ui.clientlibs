@@ -26,6 +26,8 @@ import static org.mockito.Mockito.when;
 import org.apache.sling.api.resource.PersistenceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -43,6 +45,14 @@ class JSIncludeTest extends AbstractIncludeTest {
     context.request().setAttribute("categories", CATEGORY_SINGLE);
     JSInclude underTest = AdaptTo.notNull(context.request(), JSInclude.class);
     assertEquals("<script src=\"/etc/clientlibs/app1/clientlib1.min.js\"></script>\n", underTest.getInclude());
+  }
+
+  @Test
+  void testSingleNoAttributes_ContextPath() {
+    context.request().setContextPath("/mycontext");
+    context.request().setAttribute("categories", CATEGORY_SINGLE);
+    JSInclude underTest = AdaptTo.notNull(context.request(), JSInclude.class);
+    assertEquals("<script src=\"/mycontext/etc/clientlibs/app1/clientlib1.min.js\"></script>\n", underTest.getInclude());
   }
 
   @Test
@@ -142,6 +152,46 @@ class JSIncludeTest extends AbstractIncludeTest {
             + "<script async attr1=\"value1\" attr3 data-attr2=\"5\" nomodule "
             + "src=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.js\" type=\"text/javascript\"></script>\n",
         underTest.getInclude());
+  }
+
+  @Test
+  void testMultiIgnoreDuplicates() {
+    context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    JSInclude underTest = AdaptTo.notNull(context.request(), JSInclude.class);
+    assertEquals("<script src=\"/etc/clientlibs/app1/clientlib3.min.js\"></script>\n"
+        + "<script src=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.js\"></script>\n"
+        + "<script src=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.js\"></script>\n",
+        underTest.getInclude());
+
+    // include again - should not include anything
+    context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    underTest = AdaptTo.notNull(context.request(), JSInclude.class);
+    assertEquals("", underTest.getInclude());
+
+    // include something different - should include again
+    context.request().setAttribute("categories", CATEGORY_SINGLE);
+    underTest = AdaptTo.notNull(context.request(), JSInclude.class);
+    assertEquals("<script src=\"/etc/clientlibs/app1/clientlib1.min.js\"></script>\n",
+        underTest.getInclude());
+  }
+
+  @ParameterizedTest
+  @MethodSource("booleanTrueVariants")
+  void testMultiAllowDuplicates(Object trueValue) {
+    final String expectedInclude = "<script src=\"/etc/clientlibs/app1/clientlib3.min.js\"></script>\n"
+        + "<script src=\"/etc.clientlibs/app1/clientlibs/clientlib4_proxy.min.js\"></script>\n"
+        + "<script src=\"/etc.clientlibs/app1/clientlibs/clientlib5_proxy.min.js\"></script>\n";
+
+    context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    context.request().setAttribute("allowMultipleIncludes", trueValue);
+    JSInclude underTest = AdaptTo.notNull(context.request(), JSInclude.class);
+    assertEquals(expectedInclude, underTest.getInclude());
+
+    // include again - should be included again (no duplicates removed)
+    context.request().setAttribute("categories", CATEGORIES_MULTIPLE);
+    context.request().setAttribute("allowMultipleIncludes", trueValue);
+    underTest = AdaptTo.notNull(context.request(), JSInclude.class);
+    assertEquals(expectedInclude, underTest.getInclude());
   }
 
 }

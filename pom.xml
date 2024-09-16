@@ -25,13 +25,13 @@
   <parent>
     <groupId>io.wcm</groupId>
     <artifactId>io.wcm.parent_toplevel</artifactId>
-    <version>2.2.4</version>
+    <version>2.3.2</version>
     <relativePath/>
   </parent>
 
   <groupId>io.wcm</groupId>
   <artifactId>io.wcm.wcm.ui.clientlibs</artifactId>
-  <version>1.3.0</version>
+  <version>1.4.0</version>
   <packaging>jar</packaging>
 
   <name>WCM Clientlibs UI Extensions</name>
@@ -49,7 +49,7 @@
     <site.url.module.prefix>wcm/ui/clientlibs</site.url.module.prefix>
 
     <!-- Enable reproducible builds -->
-    <project.build.outputTimestamp>2023-11-20T15:22:05Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-09-16T09:10:07Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
@@ -94,7 +94,7 @@
     <dependency>
       <groupId>io.wcm</groupId>
       <artifactId>io.wcm.testing.aem-mock.junit5</artifactId>
-      <version>5.0.0</version>
+      <version>5.5.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>

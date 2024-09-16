@@ -52,6 +52,8 @@ public class CSSInclude {
       "prefetch", "preload");
 
   @SlingObject
+  private SlingHttpServletRequest request;
+  @SlingObject
   private ResourceResolver resourceResolver;
   @OSGiService
   private HtmlLibraryManager htmlLibraryManager;
@@ -62,6 +64,8 @@ public class CSSInclude {
   private Object categories;
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private String rel;
+  @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
+  private Object allowMultipleIncludes;
   @RequestAttribute(injectionStrategy = InjectionStrategy.OPTIONAL)
   private Object customAttributes;
 
@@ -109,15 +113,14 @@ public class CSSInclude {
    */
   private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs,
       @NotNull Map<String, String> customAttrs) {
-    StringBuilder markup = new StringBuilder();
-    for (String libraryPath : libraryPaths) {
-      HtmlTagBuilder builder = new HtmlTagBuilder("link", false, xssApi);
-      builder.setAttrs(attrs);
-      builder.setAttrs(customAttrs);
-      builder.setAttr("href", libraryPath);
-      markup.append(builder.build());
-    }
-    return markup.toString();
+    return new RequestIncludedLibraries(request, allowMultipleIncludes)
+        .buildMarkupIgnoringDuplicateLibraries(libraryPaths, libraryPath -> {
+          HtmlTagBuilder builder = new HtmlTagBuilder("link", false, xssApi);
+          builder.setAttrs(attrs);
+          builder.setAttrs(customAttrs);
+          builder.setAttr("href", IncludeUtil.appendRequestPath(libraryPath, request));
+          return builder;
+        });
   }
 
   /**
