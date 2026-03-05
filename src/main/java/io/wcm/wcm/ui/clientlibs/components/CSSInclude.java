@@ -114,13 +114,13 @@ public class CSSInclude {
   private @NotNull String buildIncludeString(@NotNull List<String> libraryPaths, @NotNull Map<String, String> attrs,
       @NotNull Map<String, String> customAttrs) {
     return new RequestIncludedLibraries(request, allowMultipleIncludes)
-        .buildMarkupIgnoringDuplicateLibraries(libraryPaths, libraryPath -> {
-          HtmlTagBuilder builder = new HtmlTagBuilder("link", false, xssApi);
-          builder.setAttrs(attrs);
-          builder.setAttrs(customAttrs);
-          builder.setAttr("href", IncludeUtil.appendRequestPath(libraryPath, request));
-          return builder;
-        });
+      .buildMarkupIgnoringDuplicateLibraries(libraryPaths, libraryPath -> {
+        HtmlTagBuilder builder = new HtmlTagBuilder("link", false, xssApi);
+        builder.setAttrs(attrs);
+        builder.setAttrs(customAttrs);
+        builder.setAttr("href", IncludeUtil.appendRequestPath(libraryPath, request));
+        return builder;
+      });
   }
 
   /**
