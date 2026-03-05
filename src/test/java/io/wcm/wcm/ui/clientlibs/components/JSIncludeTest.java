@@ -142,7 +142,9 @@ class JSIncludeTest extends AbstractIncludeTest {
     context.request().setAttribute("async", true);
     context.request().setAttribute("nomodule", true);
     context.request().setAttribute("type", "text/javascript");
-    context.request().setAttribute("customAttributes", new String[] { "attr1=value1", "data-attr2=5", "attr3" });
+    context.request().setAttribute("customAttributes", new String[] {
+        "attr1=value1", "data-attr2=5", "attr3"
+    });
     JSInclude underTest = AdaptTo.notNull(context.request(), JSInclude.class);
     assertEquals(
         "<script async attr1=\"value1\" attr3 data-attr2=\"5\" nomodule "

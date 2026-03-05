@@ -51,7 +51,9 @@ final class IncludeUtil {
   public static @Nullable String[] toArray(Object categories) {
     String[] categoryArray = null;
     if (categories instanceof String) {
-      categoryArray = new String[] { (String)categories };
+      categoryArray = new String[] {
+          (String)categories
+      };
     }
     else if (categories != null && categories.getClass().isArray()) {
       categoryArray = new String[Array.getLength(categories)];
@@ -78,9 +80,9 @@ final class IncludeUtil {
   public static @NotNull List<String> getLibraryUrls(@NotNull HtmlLibraryManager htmlLibraryManager,
       @NotNull ResourceResolver resourceResolver, @NotNull String[] categoryArray, @NotNull LibraryType libraryType) {
     return htmlLibraryManager.getLibraries(categoryArray, libraryType, false, true).stream()
-        .map(library -> getLibraryUrl(resourceResolver, library, libraryType, htmlLibraryManager.isMinifyEnabled()))
-        .filter(Objects::nonNull)
-        .collect(Collectors.toList());
+      .map(library -> getLibraryUrl(resourceResolver, library, libraryType, htmlLibraryManager.isMinifyEnabled()))
+      .filter(Objects::nonNull)
+      .collect(Collectors.toList());
   }
 
   /**

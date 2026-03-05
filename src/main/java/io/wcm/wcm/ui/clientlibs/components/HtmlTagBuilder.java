@@ -71,8 +71,8 @@ class HtmlTagBuilder {
       markup.append(" ").append(attr.getKey());
       if (attr.getValue() != null) {
         markup.append("=\"")
-            .append(xssApi.encodeForHTMLAttr(attr.getValue()))
-            .append("\"");
+          .append(xssApi.encodeForHTMLAttr(attr.getValue()))
+          .append("\"");
       }
     }
     markup.append(">");

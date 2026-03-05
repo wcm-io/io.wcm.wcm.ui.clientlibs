@@ -50,7 +50,9 @@ abstract class AbstractIncludeTest {
   protected static final String CATEGORY_SINGLE = "single";
   protected static final String CATEGORY_SINGLE_PROXY = "single_proxy";
   protected static final String CATEGORY_INVALID = "invalid";
-  protected static final String[] CATEGORIES_MULTIPLE = new String[] { "multi1", "multi2" };
+  protected static final String[] CATEGORIES_MULTIPLE = new String[] {
+      "multi1", "multi2"
+  };
 
   @Mock
   protected HtmlLibraryManager htmlLibraryManager;
@@ -67,16 +69,21 @@ abstract class AbstractIncludeTest {
         clientlib("/apps/app1/clientlibs/clientlib4_proxy", true),
         clientlib("/libs/app1/clientlibs/clientlib5_proxy", true));
 
-    when(htmlLibraryManager.getLibraries(eq(new String[] { CATEGORY_SINGLE }), any(LibraryType.class), anyBoolean(), anyBoolean()))
-        .thenReturn(single);
-    when(htmlLibraryManager.getLibraries(eq(new String[] { CATEGORY_SINGLE_PROXY }), any(LibraryType.class), anyBoolean(), anyBoolean()))
-        .thenReturn(singleProxy);
+    when(htmlLibraryManager.getLibraries(eq(new String[] {
+        CATEGORY_SINGLE
+    }), any(LibraryType.class), anyBoolean(), anyBoolean()))
+      .thenReturn(single);
+    when(htmlLibraryManager.getLibraries(eq(new String[] {
+        CATEGORY_SINGLE_PROXY
+    }), any(LibraryType.class), anyBoolean(), anyBoolean()))
+      .thenReturn(singleProxy);
     when(htmlLibraryManager.getLibraries(eq(CATEGORIES_MULTIPLE), any(LibraryType.class), anyBoolean(), anyBoolean()))
-        .thenReturn(multiple);
+      .thenReturn(multiple);
     when(htmlLibraryManager.isMinifyEnabled()).thenReturn(true);
 
     context.registerService(XSSAPI.class, xssApi);
     when(xssApi.encodeForHTMLAttr(anyString())).thenAnswer(new Answer<String>() {
+
       @Override
       public String answer(InvocationOnMock invocation) throws Throwable {
         return invocation.getArgument(0);
@@ -89,6 +96,7 @@ abstract class AbstractIncludeTest {
     ClientLibrary clientlib = mock(ClientLibrary.class);
     when(clientlib.getPath()).thenReturn(path);
     when(clientlib.getIncludePath(any(LibraryType.class), anyBoolean())).then(new Answer<String>() {
+
       @Override
       public String answer(InvocationOnMock invocation) throws Throwable {
         LibraryType libraryType = invocation.getArgument(0);
